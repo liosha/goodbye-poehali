@@ -4,11 +4,16 @@ use strict;
 use GD;
 use List::Util 'first';
 
-my $dir = '_cleared';
-mkdir $dir  unless -d $dir;
+print STDERR "\n  ---|   'poehali' logo remover   (c) 2010  liosha, xliosha\@gmail.com\n\n";
+
+unless ( @ARGV ) {
+    print "Usage:\n\n  no_poehali.pl <file.gif>\n";
+    exit;
+}
 
 my $file = shift @ARGV;
-exit unless $file;
+my $dir = '_cleared';
+mkdir $dir  unless -d $dir;
 
 
 my @nb = (
@@ -18,7 +23,7 @@ my @nb = (
 );
 
 
-print STDERR "\n$file\n";
+print STDERR "$file\n";
 print STDERR "Loading...            ";
 my $im = new GD::Image( $file );
 my ($width,$height) = $im->getBounds();
@@ -61,6 +66,6 @@ close OUT;
 print STDERR "Ok\n";
 
 
-print STDERR "All done\n";
+print STDERR "All done!\n";
 
 
