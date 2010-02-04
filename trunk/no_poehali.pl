@@ -38,7 +38,7 @@ print STDERR "Yellow is $yindex\n";
 print STDERR "Processing...         ";
 
 my @changes;
-for my $y ( $height*0.1-140 .. $height*0.1+60, $height*0.95-140 .. $height*0.95+60, ) {
+for my $y ( $height*0.1-200 .. $height*0.1+100, $height*0.95-200 .. $height*0.95+100, ) {
     next if $y <  0;
     next if $y >= $height;
     for my $x ( 0 .. $width-1 ) {
