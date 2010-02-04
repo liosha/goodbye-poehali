@@ -39,8 +39,6 @@ print STDERR "$width x $height image\n";
 
 print STDERR "Processing...\n";
 
-my @changes;
-
 COLOR:
 for my $yellow ( @yellow ) {
     my $yindex = $im->colorResolve( @$yellow );
@@ -50,7 +48,7 @@ for my $yellow ( @yellow ) {
         next COLOR;
     }
 
-    @changes = ();
+    my @changes = ();
     
     for my $y ( $height*0.1-200 .. $height*0.1+100, $height*0.95-200 .. $height*0.95+100, ) {
         next if $y <  0;
