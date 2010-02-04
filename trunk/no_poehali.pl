@@ -1,3 +1,4 @@
+#!/usr/bin/perl -w
 
 use strict;
 
@@ -56,7 +57,7 @@ for my $change ( @changes ) {
 
 printf STDERR "%d pixels changed\n", scalar @changes;
 
-$file =~ s{(.*[/\\])?([^/\\]+)$}{\2};
+$file =~ s{(.*[/\\])?([^/\\]+)$}{$2};
 
 print STDERR "Writing result...     ";
 open OUT, '>', "$dir/$file";
