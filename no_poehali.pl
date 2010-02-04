@@ -5,6 +5,13 @@ use strict;
 use GD;
 use List::Util 'first';
 
+
+my @yellow = (
+    [ 0xFF, 0xFF, 0x00 ],
+    [ 0xF8, 0xF8, 0x08 ],
+);
+
+
 print STDERR "\n  ---|   'poehali' logo remover   (c) 2010  liosha, xliosha\@gmail.com\n\n";
 
 unless ( @ARGV ) {
@@ -30,32 +37,47 @@ my $im = new GD::Image( $file );
 my ($width,$height) = $im->getBounds();
 print STDERR "$width x $height image\n";
 
-
-my $yindex = $im->colorResolve( 0xFF,0xFF,0x00 );
-die unless defined $yindex;
-print STDERR "Yellow is $yindex\n";
-
-print STDERR "Processing...         ";
+print STDERR "Processing...\n";
 
 my @changes;
-for my $y ( $height*0.1-200 .. $height*0.1+100, $height*0.95-200 .. $height*0.95+100, ) {
-    next if $y <  0;
-    next if $y >= $height;
-    for my $x ( 0 .. $width-1 ) {
-        my $pix = $im->getPixel( $x, $y );
-        if ( $pix == $yindex ) {
-            my $newpix;
-            first {  ( $newpix = $im->getPixel( $x+$_->[0], $y+$_->[1] ) ) != $pix  } @nb;
-            push @changes, [ $x, $y, $newpix ]  unless $pix == $newpix;
+
+COLOR:
+for my $yellow ( @yellow ) {
+    my $yindex = $im->colorResolve( @$yellow );
+    printf STDERR "Color #%02X%02X%02X %-6s  ", @$yellow, "($yindex):";
+    unless ( defined $yindex ) {
+        print STDERR "no such color\n";
+        next COLOR;
+    }
+
+    @changes = ();
+    
+    for my $y ( $height*0.1-200 .. $height*0.1+100, $height*0.95-200 .. $height*0.95+100, ) {
+        next if $y <  0;
+        next if $y >= $height;
+        for my $x ( 0 .. $width-1 ) {
+            my $pix = $im->getPixel( $x, $y );
+            if ( $pix == $yindex ) {
+                my $newpix;
+                first {  ( $newpix = $im->getPixel( $x+$_->[0], $y+$_->[1] ) ) != $pix  } @nb;
+                push @changes, [ $x, $y, $newpix ]  unless $pix == $newpix;
+            }
         }
     }
-}
 
-for my $change ( @changes ) {
-    $im->setPixel( @$change );
-}
+    printf STDERR "%d pixels", scalar @changes;
 
-printf STDERR "%d pixels changed\n", scalar @changes;
+    if ( @changes > 5000 ) {
+        print STDERR " - ok\n";
+        for my $change ( @changes ) {
+            $im->setPixel( @$change );
+        }
+        last COLOR;
+    }
+    else {
+        print STDERR " - too few\n";
+    }
+}
 
 $file =~ s{(.*[/\\])?([^/\\]+)$}{$2};
 
