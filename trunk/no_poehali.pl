@@ -12,7 +12,7 @@ my @yellow = (
 );
 
 
-print STDERR "\n  ---|   'poehali' logo remover   (c) 2010  liosha, xliosha\@gmail.com\n\n";
+print "\n  ---|   'poehali' logo remover   (c) 2010  liosha, xliosha\@gmail.com\n\n";
 
 unless ( @ARGV ) {
     print "Usage:\n\n  no_poehali.pl <file.gif>\n";
@@ -31,20 +31,20 @@ my @nb = (
 );
 
 
-print STDERR "$file\n";
-print STDERR "Loading...            ";
+print "$file\n";
+print "Loading...            ";
 my $im = new GD::Image( $file );
 my ($width,$height) = $im->getBounds();
-print STDERR "$width x $height image\n";
+print "$width x $height image\n";
 
-print STDERR "Processing...\n";
+print "Processing...\n";
 
 COLOR:
 for my $yellow ( @yellow ) {
     my $yindex = $im->colorResolve( @$yellow );
-    printf STDERR "Color #%02X%02X%02X %-6s  ", @$yellow, "($yindex):";
+    printf "Color #%02X%02X%02X %-6s  ", @$yellow, "($yindex):";
     unless ( defined $yindex ) {
-        print STDERR "no such color\n";
+        print "no such color\n";
         next COLOR;
     }
 
@@ -63,30 +63,30 @@ for my $yellow ( @yellow ) {
         }
     }
 
-    printf STDERR "%d pixels", scalar @changes;
+    printf "%d pixels", scalar @changes;
 
     if ( @changes > 5000 ) {
-        print STDERR " - ok\n";
+        print " - ok\n";
         for my $change ( @changes ) {
             $im->setPixel( @$change );
         }
         last COLOR;
     }
     else {
-        print STDERR " - too few\n";
+        print " - too few\n";
     }
 }
 
 $file =~ s{(.*[/\\])?([^/\\]+)$}{$2};
 
-print STDERR "Writing result...     ";
+print "Writing result...     ";
 open OUT, '>', "$dir/$file";
 binmode OUT;
 print OUT $im->gif();
 close OUT;
-print STDERR "Ok\n";
+print "Ok\n";
 
 
-print STDERR "All done!\n";
+print "All done!\n";
 
 
